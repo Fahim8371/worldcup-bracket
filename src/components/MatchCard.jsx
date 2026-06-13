@@ -1,5 +1,5 @@
 import { flagFor } from '../lib/teams.js'
-import { formatMelbourneTime } from '../lib/time.js'
+import { formatLocalTime } from '../lib/time.js'
 
 const LIVE = new Set(['IN_PLAY', 'PAUSED'])
 const DONE = new Set(['FINISHED', 'AWARDED'])
@@ -29,7 +29,7 @@ export default function MatchCard({ match, favourites, watched = false, onToggle
   let statusEl
   if (live) statusEl = <span className="badge live">● LIVE</span>
   else if (done) statusEl = <span className="badge done">FT</span>
-  else statusEl = <span className="kickoff">{formatMelbourneTime(match.utcDate)}</span>
+  else statusEl = <span className="kickoff">{formatLocalTime(match.utcDate)}</span>
 
   const meta = match.group
     ? match.group.replace('GROUP_', 'Group ')

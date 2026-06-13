@@ -1,6 +1,6 @@
 import { useMemo, useRef } from 'react'
 import MatchCard from './MatchCard.jsx'
-import { melbourneDayKey } from '../lib/time.js'
+import { localDayKey, formatLocalDay } from '../lib/time.js'
 import { flagFor } from '../lib/teams.js'
 import { downloadIcs } from '../lib/ics.js'
 
@@ -23,7 +23,7 @@ function daysInMonth(y, m) {
 // Build the list of {year, month} to show, spanning all watched (or all) matches.
 function monthsSpanning(matches) {
   if (matches.length === 0) return [{ y: 2026, m: 6 }]
-  const keys = matches.map((x) => melbourneDayKey(x.utcDate)).sort()
+  const keys = matches.map((x) => localDayKey(x.utcDate)).sort()
   const [y1, m1] = keys[0].split('-').map(Number)
   const [y2, m2] = keys.at(-1).split('-').map(Number)
   const out = []
@@ -111,7 +111,7 @@ export default function Calendar({ matches, favourites, watch, onToggleWatch }) 
   const byDay = useMemo(() => {
     const map = new Map()
     for (const m of watched) {
-      const k = melbourneDayKey(m.utcDate)
+      const k = localDayKey(m.utcDate)
       if (!map.has(k)) map.set(k, [])
       map.get(k).push(m)
     }
@@ -119,7 +119,7 @@ export default function Calendar({ matches, favourites, watch, onToggleWatch }) 
   }, [watched])
 
   const months = useMemo(() => monthsSpanning(watched), [watched])
-  const todayKey = melbourneDayKey(new Date())
+  const todayKey = localDayKey(new Date())
 
   // Index of the next game still to come (first not in the past).
   const now = Date.now()
@@ -179,16 +179,11 @@ export default function Calendar({ matches, favourites, watch, onToggleWatch }) 
         {watched.map((m) => (
           <div
             key={m.id}
-            data-agenda-day={melbourneDayKey(m.utcDate)}
+            data-agenda-day={localDayKey(m.utcDate)}
             className={m.id === nextId ? 'agenda-next' : ''}
           >
             <div className="agenda-date">
-              {new Date(m.utcDate).toLocaleDateString('en-AU', {
-                weekday: 'short',
-                day: 'numeric',
-                month: 'short',
-                timeZone: 'Australia/Melbourne',
-              })}
+              {formatLocalDay(m.utcDate)}
               {m.id === nextId && <span className="next-pill">NEXT UP</span>}
             </div>
             <MatchCard

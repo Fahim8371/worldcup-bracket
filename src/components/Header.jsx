@@ -1,24 +1,23 @@
-export default function Header({ lastUpdated, onEditTeams }) {
+import { tzLabel } from '../lib/time.js'
+
+export default function Header({ timezone, onOpenSettings }) {
   return (
     <header className="app-header">
       <div className="title-block">
         <h1>
           <span className="trophy">🏆</span> World Cup 2026
         </h1>
-        <p className="muted small">Melbourne time · your bracket</p>
+        <p className="muted small">{tzLabel(timezone)} time</p>
       </div>
       <div className="spacer" />
-      {lastUpdated && (
-        <span className="muted small updated">
-          Updated{' '}
-          {lastUpdated.toLocaleTimeString('en-AU', {
-            hour: 'numeric',
-            minute: '2-digit',
-          })}
-        </span>
-      )}
-      <button className="btn ghost" type="button" onClick={onEditTeams}>
-        ✎ Edit teams
+      <button
+        className="icon-btn settings-btn"
+        type="button"
+        onClick={onOpenSettings}
+        aria-label="Settings"
+        title="Settings"
+      >
+        ⚙️
       </button>
     </header>
   )

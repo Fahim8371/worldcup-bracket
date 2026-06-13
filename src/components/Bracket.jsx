@@ -1,6 +1,6 @@
 import { buildBracket, hasKnockoutData } from '../lib/bracket.js'
 import { flagFor } from '../lib/teams.js'
-import { formatMelbourneDay, formatMelbourneTime } from '../lib/time.js'
+import { formatLocalDay, formatLocalTime } from '../lib/time.js'
 
 function Slot({ team, isFav, isWinner, showScore, score }) {
   const tbd = !team.tla
@@ -56,7 +56,7 @@ function BracketMatch({ match, favourites, watched, onToggleWatch }) {
         {live ? (
           <span className="badge live">● LIVE</span>
         ) : (
-          `${formatMelbourneDay(match.utcDate)} · ${formatMelbourneTime(match.utcDate)}`
+          `${formatLocalDay(match.utcDate)} · ${formatLocalTime(match.utcDate)}`
         )}
       </div>
     </div>
