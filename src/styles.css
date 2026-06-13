@@ -1,0 +1,583 @@
+:root {
+  --bg: #0b1220;
+  --bg-soft: #131c2e;
+  --card: #1a2438;
+  --card-muted: #141b29;
+  --line: #283349;
+  --text: #e8edf6;
+  --muted: #8a97ad;
+  --accent: #34d39a;
+  --accent-dim: #1f7a5c;
+  --fav: #2dd4bf;
+  --live: #ff5c72;
+  --gold: #f6c453;
+  --radius: 14px;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 50% -10%, #16233d 0%, var(--bg) 60%);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 760px;
+  margin: 0 auto;
+  /* Respect the iPhone notch / status bar / home indicator when installed. */
+  padding: env(safe-area-inset-top) calc(16px + env(safe-area-inset-right))
+    calc(64px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+}
+.onboarding {
+  padding-top: calc(24px + env(safe-area-inset-top));
+}
+
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 0.8rem;
+}
+.spacer {
+  flex: 1;
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 4px 14px;
+}
+.app-header h1 {
+  font-size: 1.35rem;
+  margin: 0;
+}
+.title-block p {
+  margin: 2px 0 0;
+}
+.trophy {
+  filter: drop-shadow(0 0 8px rgba(246, 196, 83, 0.5));
+}
+.updated {
+  white-space: nowrap;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn:hover {
+  border-color: var(--accent);
+}
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #04221a;
+  font-weight: 700;
+}
+.btn.primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn.ghost {
+  background: transparent;
+}
+
+/* ---------- Tabs ---------- */
+.tabs {
+  display: flex;
+  gap: 6px;
+  background: var(--bg-soft);
+  padding: 5px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  width: fit-content;
+  margin: 4px auto 22px;
+}
+.tab {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 22px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.tab.active {
+  background: var(--accent);
+  color: #04221a;
+}
+
+/* ---------- Onboarding ---------- */
+.onboarding {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.onboarding-card {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 28px;
+  max-width: 720px;
+  width: 100%;
+}
+.onboarding-card h1 {
+  margin: 0 0 6px;
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 20px 0;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.team-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.12s ease;
+}
+.team-chip:hover {
+  border-color: var(--accent-dim);
+}
+.team-chip.selected {
+  border-color: var(--accent);
+  background: rgba(52, 211, 154, 0.14);
+}
+.team-chip .team-name {
+  font-size: 0.88rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.flag {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.onboarding-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------- Fixtures ---------- */
+.fixtures-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.small-btn {
+  font-size: 0.8rem;
+  padding: 7px 12px;
+}
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.day-section {
+  margin-bottom: 22px;
+}
+.day-heading {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 0 0 10px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  padding: 6px 0;
+  z-index: 1;
+}
+.day-matches {
+  display: grid;
+  gap: 10px;
+}
+
+/* ---------- Match card ---------- */
+.match-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+.match-card.is-fav {
+  border-color: var(--accent-dim);
+  box-shadow: inset 3px 0 0 var(--fav);
+}
+/* Greyed-out games: de-emphasised but scores still fully legible. */
+.match-card.muted-card {
+  background: var(--card-muted);
+  opacity: 0.62;
+  filter: saturate(0.45);
+}
+.match-card.muted-card:hover {
+  opacity: 0.95;
+  filter: saturate(1);
+}
+.match-card.is-live {
+  border-color: var(--live);
+}
+.match-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.74rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.meta-text {
+  text-transform: capitalize;
+}
+.meta-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kickoff {
+  font-weight: 700;
+  color: var(--text);
+}
+/* Watch (add-to-calendar) star toggle */
+.watch-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 6px;
+  transition: transform 0.1s ease, color 0.1s ease;
+}
+.watch-btn:hover {
+  color: var(--gold);
+  transform: scale(1.2);
+}
+.watch-btn.on {
+  color: var(--gold);
+}
+/* Keep the star fully visible even on greyed cards */
+.muted-card .watch-btn {
+  filter: none;
+  opacity: 1;
+}
+.watch-btn.corner {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 0.95rem;
+}
+.bracket-match {
+  position: relative;
+}
+.match-card.is-watched,
+.bracket-match.is-watched {
+  box-shadow: inset 3px 0 0 var(--gold);
+}
+.match-card.is-watched.muted-card,
+.bracket-match.is-watched.muted-card {
+  opacity: 0.92;
+  filter: saturate(0.8);
+}
+.badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+.badge.live {
+  background: rgba(255, 92, 114, 0.16);
+  color: var(--live);
+}
+.badge.done {
+  background: rgba(138, 151, 173, 0.16);
+  color: var(--muted);
+}
+.teams {
+  display: grid;
+  gap: 4px;
+}
+.team-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+.team-row .team-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.team-row.fav .team-name {
+  font-weight: 700;
+  color: var(--fav);
+}
+.team-row.winner .team-name {
+  font-weight: 700;
+}
+.team-row .score {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  font-size: 1.1rem;
+  min-width: 18px;
+  text-align: right;
+}
+.team-row.winner .score {
+  color: var(--gold);
+}
+
+/* ---------- Bracket ---------- */
+.bracket-scroll {
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+.bracket {
+  display: flex;
+  gap: 18px;
+  min-width: min-content;
+}
+.bracket-round {
+  min-width: 190px;
+}
+.round-heading {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.round-matches {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  justify-content: space-around;
+}
+.bracket-match {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px;
+}
+.bracket-match.is-fav {
+  border-color: var(--accent-dim);
+  box-shadow: inset 3px 0 0 var(--fav);
+}
+.bracket-match.muted-card {
+  opacity: 0.62;
+  filter: saturate(0.45);
+}
+.bracket-match.is-live {
+  border-color: var(--live);
+}
+.slot {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 2px;
+  font-size: 0.85rem;
+}
+.slot.fav .team-name {
+  font-weight: 700;
+  color: var(--fav);
+}
+.slot.winner .team-name {
+  color: var(--gold);
+  font-weight: 700;
+}
+.slot.tbd {
+  color: var(--muted);
+}
+.slot .team-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.slot .score {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.bracket-match-meta {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 6px;
+  text-align: center;
+}
+.bracket-empty,
+.bracket-scroll {
+  margin-top: 8px;
+}
+.bracket-empty {
+  text-align: center;
+  padding: 40px 16px;
+}
+
+/* ---------- States ---------- */
+.error-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(255, 92, 114, 0.12);
+  border: 1px solid var(--live);
+  color: #ffd7dd;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+.loading,
+.empty {
+  text-align: center;
+  padding: 40px 0;
+}
+
+/* ---------- Calendar tab ---------- */
+.cal-empty {
+  text-align: center;
+  padding: 48px 16px;
+}
+.cal-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.cal-months {
+  display: grid;
+  gap: 22px;
+  margin-bottom: 26px;
+}
+.cal-month-label {
+  font-size: 0.95rem;
+  margin: 0 0 10px;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.cal-weekday {
+  text-align: center;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding-bottom: 4px;
+}
+.cal-cell {
+  min-height: 64px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card-muted);
+  padding: 5px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cal-cell.empty {
+  border: none;
+  background: transparent;
+}
+.cal-cell.has-games {
+  background: rgba(246, 196, 83, 0.12);
+  border-color: var(--gold);
+  cursor: pointer;
+}
+.cal-cell.has-games:hover {
+  background: rgba(246, 196, 83, 0.22);
+}
+.cal-cell.today {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+.cal-daynum {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.cal-cell.has-games .cal-daynum {
+  color: var(--text);
+}
+.cal-flags {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.cal-flag {
+  font-size: 0.78rem;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+.cal-more {
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+.agenda {
+  display: grid;
+  gap: 14px;
+}
+.agenda-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.next-pill {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #04221a;
+  background: var(--accent);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.agenda-next .match-card {
+  border-color: var(--accent);
+}
+
+@media (max-width: 480px) {
+  .cal-cell {
+    min-height: 52px;
+  }
+  .cal-flag {
+    font-size: 0.66rem;
+  }
+}

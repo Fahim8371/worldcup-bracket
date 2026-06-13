@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+.DS_Store
+*.local
+# Match data is fetched fresh in CI at build time, not committed.
+public/matches.json
