@@ -33,7 +33,8 @@ const TABS = [
 ]
 
 export default function App() {
-  const { matches, loading, error } = useMatches()
+  const { matches, loading, error, lastUpdated, refresh } = useMatches()
+  const [refreshing, setRefreshing] = useState(false)
   const [favList, setFavList] = useState(getFavourites)
   const [watchList, setWatchList] = useState(getWatchlist)
   const [tab, setTab] = useState('fixtures')
@@ -59,6 +60,16 @@ export default function App() {
   const favourites = useMemo(() => new Set(favList), [favList])
   const watch = useMemo(() => new Set(watchList), [watchList])
   const teams = useMemo(() => mergeTeams(TEAMS, teamsFromMatches(matches)), [matches])
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true)
+    try {
+      await refresh()
+    } finally {
+      // Brief minimum spin so the tap registers visually.
+      setTimeout(() => setRefreshing(false), 500)
+    }
+  }, [refresh])
 
   const toggleWatch = useCallback((id) => {
     setWatchList((prev) => {
@@ -98,7 +109,13 @@ export default function App() {
   return (
     <div className="app">
       <div className="pitch-markings" aria-hidden="true" />
-      <Header timezone={tz} onOpenSettings={() => setShowSettings(true)} />
+      <Header
+        timezone={tz}
+        lastUpdated={lastUpdated}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        onOpenSettings={() => setShowSettings(true)}
+      />
       <InstallHint />
       {matches.length > 0 && (
         <LiveStrip matches={matches} favourites={favourites} watch={watch} />

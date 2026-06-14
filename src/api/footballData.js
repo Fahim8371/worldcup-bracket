@@ -37,25 +37,16 @@ async function fetchJson(url) {
 
 // Where match data comes from:
 // - Dev: the live API via the Vite proxy (key injected server-side).
-// - Prod: the Vercel live proxy (fresh, polled ~60s) if configured, falling back
-//   to the static matches.json snapshot the GitHub Action bakes in.
+// - Prod: the static matches.json snapshot the GitHub Action bakes in. We add a
+//   cache-busting query so the manual "Update scores" button always pulls the
+//   freshest published snapshot rather than a cached copy.
 const DEV = import.meta.env.DEV
-const PROXY = import.meta.env.VITE_LIVE_PROXY || ''
 const SNAPSHOT = `${import.meta.env.BASE_URL}matches.json`
 
 export async function fetchMatches() {
   if (DEV) return fetchJson('/api/fd/competitions/WC/matches')
-
-  // Prefer the live proxy; fall back to the snapshot if it's unreachable.
-  if (PROXY) {
-    try {
-      return await fetchJson(PROXY)
-    } catch {
-      /* fall through to snapshot */
-    }
-  }
   try {
-    return await fetchJson(SNAPSHOT)
+    return await fetchJson(`${SNAPSHOT}?t=${Date.now()}`)
   } catch (err) {
     throw new Error(`Couldn't load matches (${err.message}).`)
   }
