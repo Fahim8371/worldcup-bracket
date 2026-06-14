@@ -21,6 +21,17 @@ function emptyRow(team) {
 export function buildStandings(matches) {
   const groups = new Map() // groupName -> Map(tla -> row)
 
+  // First pass: seed every group with ALL its teams from the fixtures, so the
+  // table shows all four nations from the start (0 played until games finish).
+  for (const m of matches) {
+    if (m.stage !== 'GROUP_STAGE' || !m.group) continue
+    if (!groups.has(m.group)) groups.set(m.group, new Map())
+    const table = groups.get(m.group)
+    if (m.home.tla && !table.has(m.home.tla)) table.set(m.home.tla, emptyRow(m.home))
+    if (m.away.tla && !table.has(m.away.tla)) table.set(m.away.tla, emptyRow(m.away))
+  }
+
+  // Second pass: tally stats from finished matches only.
   for (const m of matches) {
     if (m.stage !== 'GROUP_STAGE' || !m.group) continue
     if (!DONE.has(m.status)) continue
@@ -29,11 +40,7 @@ export function buildStandings(matches) {
     const a = m.score.away
     if (h == null || a == null) continue
 
-    if (!groups.has(m.group)) groups.set(m.group, new Map())
     const table = groups.get(m.group)
-    if (!table.has(m.home.tla)) table.set(m.home.tla, emptyRow(m.home))
-    if (!table.has(m.away.tla)) table.set(m.away.tla, emptyRow(m.away))
-
     const rh = table.get(m.home.tla)
     const ra = table.get(m.away.tla)
     rh.played++

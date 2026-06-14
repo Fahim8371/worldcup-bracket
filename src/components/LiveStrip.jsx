@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { flagFor } from '../lib/teams.js'
+import Flag from './Flag.jsx'
+import { openMatch } from '../lib/matchLink.js'
 
 const LIVE = new Set(['IN_PLAY', 'PAUSED'])
 const DONE = new Set(['FINISHED', 'AWARDED'])
@@ -49,28 +50,38 @@ export default function LiveStrip({ matches, favourites, watch }) {
   return (
     <div className="live-strip">
       {live.map((m) => (
-        <div key={m.id} className="live-chip">
+        <div
+          key={m.id}
+          className="live-chip"
+          onClick={() => openMatch(m.home, m.away)}
+          title="Open live score on Google"
+        >
           <span className="badge live">● LIVE</span>
           <span className="lc-team">
-            {flagFor(m.home.tla)} {m.home.name}
+            <Flag tla={m.home.tla} size={18} /> {m.home.name}
           </span>
           <span className="lc-score">
             {m.score.home}–{m.score.away}
           </span>
           <span className="lc-team">
-            {flagFor(m.away.tla)} {m.away.name}
+            <Flag tla={m.away.tla} size={18} /> {m.away.name}
           </span>
         </div>
       ))}
 
       {nextGame && (
-        <div className="next-chip">
+        <div
+          className="next-chip"
+          onClick={() => openMatch(nextGame.match.home, nextGame.match.away)}
+          title="Open live score on Google"
+          style={{ cursor: 'pointer' }}
+        >
           <span className="next-label">
             {nextGame.reason === 'watchlist' ? '⭐ Next on your list' : 'Your next game'}
           </span>
           <span className="nc-teams">
-            {flagFor(nextGame.match.home.tla)} {nextGame.match.home.name} v{' '}
-            {nextGame.match.away.name} {flagFor(nextGame.match.away.tla)}
+            <Flag tla={nextGame.match.home.tla} size={18} /> {nextGame.match.home.name} v{' '}
+            {nextGame.match.away.name} <Flag tla={nextGame.match.away.tla} size={18} />
           </span>
           <span className="nc-count">
             kicks off in {formatCountdown(new Date(nextGame.match.utcDate).getTime() - now)}

@@ -1,5 +1,6 @@
-import { flagFor } from '../lib/teams.js'
+import Flag from './Flag.jsx'
 import { formatLocalTime } from '../lib/time.js'
+import { openMatch } from '../lib/matchLink.js'
 
 const LIVE = new Set(['IN_PLAY', 'PAUSED'])
 const DONE = new Set(['FINISHED', 'AWARDED'])
@@ -7,7 +8,7 @@ const DONE = new Set(['FINISHED', 'AWARDED'])
 function TeamRow({ team, score, isFav, isWinner, showScore }) {
   return (
     <div className={`team-row ${isFav ? 'fav' : ''} ${isWinner ? 'winner' : ''}`}>
-      <span className="flag">{flagFor(team.tla)}</span>
+      <Flag tla={team.tla} size={28} />
       <span className="team-name">{team.name}</span>
       <span className="score">{showScore ? score : ''}</span>
     </div>
@@ -16,7 +17,8 @@ function TeamRow({ team, score, isFav, isWinner, showScore }) {
 
 // One fixture. When neither team is a favourite the card is greyed/desaturated,
 // but the score stays readable — disliked games are de-emphasised, not hidden.
-// The star toggle adds/removes the game from the watchlist (works on any game).
+// Tapping the card opens the Google live-score panel; the star toggles the
+// watchlist (works on any game).
 export default function MatchCard({ match, favourites, watched = false, onToggleWatch }) {
   const favHome = match.home.tla && favourites.has(match.home.tla)
   const favAway = match.away.tla && favourites.has(match.away.tla)
@@ -37,9 +39,12 @@ export default function MatchCard({ match, favourites, watched = false, onToggle
 
   return (
     <div
-      className={`match-card ${isFavGame ? 'is-fav' : 'muted-card'} ${live ? 'is-live' : ''} ${
-        watched ? 'is-watched' : ''
-      }`}
+      className={`match-card clickable ${isFavGame ? 'is-fav' : 'muted-card'} ${
+        live ? 'is-live' : ''
+      } ${watched ? 'is-watched' : ''}`}
+      onClick={() => openMatch(match.home, match.away)}
+      role="button"
+      title="Open live score on Google"
     >
       <div className="match-meta">
         <span className="meta-text">{meta}</span>
@@ -49,7 +54,10 @@ export default function MatchCard({ match, favourites, watched = false, onToggle
             <button
               type="button"
               className={`watch-btn ${watched ? 'on' : ''}`}
-              onClick={() => onToggleWatch(match.id)}
+              onClick={(e) => {
+                e.stopPropagation()
+                onToggleWatch(match.id)
+              }}
               title={watched ? 'Remove from my calendar' : 'Add to my calendar'}
               aria-pressed={watched}
             >

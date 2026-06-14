@@ -97,6 +97,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <div className="pitch-markings" aria-hidden="true" />
       <Header timezone={tz} onOpenSettings={() => setShowSettings(true)} />
       <InstallHint />
       {matches.length > 0 && (

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { buildStandings } from '../lib/standings.js'
-import { flagFor } from '../lib/teams.js'
+import Flag from './Flag.jsx'
 
 export default function Standings({ matches, favourites }) {
   const groups = useMemo(() => buildStandings(matches), [matches])
@@ -37,7 +37,7 @@ export default function Standings({ matches, favourites }) {
                 return (
                   <tr key={r.tla} className={`${fav ? 'fav' : ''} ${i < 2 ? 'qualifying' : ''}`}>
                     <td className="st-team">
-                      <span className="flag">{flagFor(r.tla)}</span>
+                      <Flag tla={r.tla} size={22} />
                       <span className="team-name">{r.name}</span>
                     </td>
                     <td>{r.played}</td>

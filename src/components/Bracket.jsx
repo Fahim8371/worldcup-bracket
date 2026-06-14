@@ -1,12 +1,13 @@
 import { buildBracket, hasKnockoutData } from '../lib/bracket.js'
-import { flagFor } from '../lib/teams.js'
+import Flag from './Flag.jsx'
 import { formatLocalDay, formatLocalTime } from '../lib/time.js'
+import { openMatch } from '../lib/matchLink.js'
 
 function Slot({ team, isFav, isWinner, showScore, score }) {
   const tbd = !team.tla
   return (
     <div className={`slot ${isFav ? 'fav' : ''} ${isWinner ? 'winner' : ''} ${tbd ? 'tbd' : ''}`}>
-      <span className="flag">{tbd ? '❓' : flagFor(team.tla)}</span>
+      {tbd ? <span className="flag" /> : <Flag tla={team.tla} size={22} />}
       <span className="team-name">{team.name}</span>
       {showScore && <span className="score">{score}</span>}
     </div>
@@ -20,18 +21,24 @@ function BracketMatch({ match, favourites, watched, onToggleWatch }) {
   const done = match.status === 'FINISHED' || match.status === 'AWARDED'
   const live = match.status === 'IN_PLAY' || match.status === 'PAUSED'
   const showScore = done || live
+  const playable = match.home.tla && match.away.tla
 
   return (
     <div
-      className={`bracket-match ${isFav ? 'is-fav' : 'muted-card'} ${live ? 'is-live' : ''} ${
-        watched ? 'is-watched' : ''
-      }`}
+      className={`bracket-match ${playable ? 'clickable' : ''} ${
+        isFav ? 'is-fav' : 'muted-card'
+      } ${live ? 'is-live' : ''} ${watched ? 'is-watched' : ''}`}
+      onClick={playable ? () => openMatch(match.home, match.away) : undefined}
+      title={playable ? 'Open live score on Google' : undefined}
     >
       {onToggleWatch && (
         <button
           type="button"
           className={`watch-btn corner ${watched ? 'on' : ''}`}
-          onClick={() => onToggleWatch(match.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onToggleWatch(match.id)
+          }}
           title={watched ? 'Remove from my calendar' : 'Add to my calendar'}
           aria-pressed={watched}
         >

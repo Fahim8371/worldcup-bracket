@@ -47,7 +47,12 @@ jobs:
             -o public/matches.json
           echo "Saved $(wc -c < public/matches.json) bytes of match data."
 
-      - run: npm run build
+      - name: Build
+        env:
+          # Live proxy the deployed app polls for fresh scores; falls back to
+          # the baked matches.json if unreachable. Update if your Vercel URL differs.
+          VITE_LIVE_PROXY: https://wc2026-proxy.vercel.app/api/matches
+        run: npm run build
 
       - uses: actions/configure-pages@v5
 

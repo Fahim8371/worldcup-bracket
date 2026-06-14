@@ -28,24 +28,35 @@ function normaliseMatch(m) {
   }
 }
 
-// In dev we hit the live API through the Vite proxy (key injected server-side).
-// In the production build (GitHub Pages) there is no server, so we read a static
-// matches.json that a scheduled GitHub Action refreshes every ~10 minutes.
-const SOURCE = import.meta.env.DEV
-  ? '/api/fd/competitions/WC/matches'
-  : `${import.meta.env.BASE_URL}matches.json`
-
-export async function fetchMatches() {
-  const res = await fetch(SOURCE, { cache: 'no-store' })
-  if (!res.ok) {
-    let detail = ''
-    try {
-      detail = (await res.json())?.message || ''
-    } catch {
-      /* ignore */
-    }
-    throw new Error(`Couldn't load matches (${res.status}${detail ? `: ${detail}` : ''}).`)
-  }
+async function fetchJson(url) {
+  const res = await fetch(url, { cache: 'no-store' })
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const data = await res.json()
   return (data.matches ?? []).map(normaliseMatch)
+}
+
+// Where match data comes from:
+// - Dev: the live API via the Vite proxy (key injected server-side).
+// - Prod: the Vercel live proxy (fresh, polled ~60s) if configured, falling back
+//   to the static matches.json snapshot the GitHub Action bakes in.
+const DEV = import.meta.env.DEV
+const PROXY = import.meta.env.VITE_LIVE_PROXY || ''
+const SNAPSHOT = `${import.meta.env.BASE_URL}matches.json`
+
+export async function fetchMatches() {
+  if (DEV) return fetchJson('/api/fd/competitions/WC/matches')
+
+  // Prefer the live proxy; fall back to the snapshot if it's unreachable.
+  if (PROXY) {
+    try {
+      return await fetchJson(PROXY)
+    } catch {
+      /* fall through to snapshot */
+    }
+  }
+  try {
+    return await fetchJson(SNAPSHOT)
+  } catch (err) {
+    throw new Error(`Couldn't load matches (${err.message}).`)
+  }
 }

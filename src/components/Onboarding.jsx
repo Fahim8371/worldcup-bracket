@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Guide from './Guide.jsx'
+import Flag from './Flag.jsx'
 import { tzLabel } from '../lib/time.js'
 
 // First-run flow: Welcome → Pick teams → Guide slides → Done.
@@ -85,7 +86,7 @@ export function TeamPicker({
                 onClick={() => toggle(t.tla)}
                 type="button"
               >
-                <span className="flag">{t.flag}</span>
+                <Flag tla={t.tla} size={24} />
                 <span className="team-name">{t.name}</span>
               </button>
             )

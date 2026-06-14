@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react'
 import MatchCard from './MatchCard.jsx'
 import { localDayKey, formatLocalDay } from '../lib/time.js'
-import { flagFor } from '../lib/teams.js'
+import Flag from './Flag.jsx'
 import { downloadIcs } from '../lib/ics.js'
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -80,8 +80,8 @@ function MonthGrid({ y, m, byDay, todayKey, onPickDay }) {
                 <div className="cal-flags">
                   {games.slice(0, 3).map((g) => (
                     <span key={g.id} className="cal-flag">
-                      {flagFor(g.home.tla)}
-                      {flagFor(g.away.tla)}
+                      <Flag tla={g.home.tla} size={14} />
+                      <Flag tla={g.away.tla} size={14} />
                     </span>
                   ))}
                   {games.length > 3 && <span className="cal-more">+{games.length - 3}</span>}
